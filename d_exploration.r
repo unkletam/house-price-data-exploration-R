@@ -2,7 +2,7 @@ easypackages::libraries("dplyr", "ggplot2", "tidyr", "corrplot", "corrr", "magri
 
 options(scipen = 5)               #To force R to not use scientfic notation
 
-dataset <- read.csv("train.csv")
+dataset <- read.csv("dataset/train.csv")
 
 str(dataset)    
 
