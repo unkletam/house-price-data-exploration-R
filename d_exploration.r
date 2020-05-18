@@ -7,7 +7,6 @@ dataset <- read.csv("train.csv")
 str(dataset)    
 
 
-
 ggplot(dataset, aes(x=SalePrice)) + 
   theme_bw()+
   geom_histogram(aes(y=..density..),color = 'black', fill = 'white', binwidth = 50000)+
@@ -92,9 +91,6 @@ smoothScatter(numeric_NA$GrLivArea, numeric_NA$SalePrice,xlim=c(1,5000),  main =
 smoothScatter(numeric_NA$SalePrice, numeric_NA$TotalBsmtSF, main =" Total Basement Area vs. Sale Price",xlab="Price", ylab="Basement Area") #The outliers isnt that bad and we can leave them alone.
 
 
-
-
-
 #advanced
 
 hist(numeric_NA$SalePrice, probability = TRUE, main = "Sales Price Density", xlab = "Price")
@@ -112,9 +108,6 @@ lines(density(numeric_NA$log_price, adjust=5),col="red")
 
 p <- probplot(numeric_NA$log_price, line=FALSE)           
 lines(p, col="red", lty=2, lwd=2)
-
-
-
 
 
 
@@ -162,12 +155,7 @@ lines(p, col="red", lty=2, lwd=2)
 
 
 
-
-
-
 #checking for homoscedasiticity
-
-
 
 plot(numeric_NA$grlive_log, numeric_NA$log_price, main =" Homoscedasticity for Living Area vs. Sale Price",xlab="Living Area", ylab="price")
 
