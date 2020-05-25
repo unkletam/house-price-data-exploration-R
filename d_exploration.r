@@ -4,7 +4,8 @@ options(scipen = 5)               #To force R to not use scientfic notation
 
 dataset <- read.csv("dataset/train.csv")
 
-str(dataset)    
+str(dataset)  
+View(dataset)
 
 
 ggplot(dataset, aes(x=SalePrice)) + 
@@ -16,19 +17,25 @@ ggplot(dataset, aes(x=SalePrice)) +
 
 summary(dataset$SalePrice)
 
+#bringing in variables
+
+dataset$YearBuilt <- factor(dataset$YearBuilt)
+dataset$OverallQual <- factor(dataset$OverallQual)
 
 ggplot(dataset, aes(y=SalePrice, x=YearBuilt, group=YearBuilt, fill=YearBuilt)) +
   theme_bw()+
   geom_boxplot(outlier.colour="red", outlier.shape=8,
                outlier.size=1)+
   theme(legend.position="none")+
-  scale_fill_viridis(discrete = FALSE) +
+  scale_fill_viridis(discrete = TRUE) +
+  theme(axis.text.x = element_text(angle = 90))+
   labs(title = "Year Built vs. Sale Price", x="Year", y="Price")
+
 
 ggplot(dataset, aes(y=SalePrice, x=OverallQual, group=OverallQual,fill=OverallQual)) +
   geom_boxplot(alpha=0.3)+
   theme(legend.position="none")+
-  scale_fill_viridis(discrete = FALSE, option="B") +
+  scale_fill_viridis(discrete = TRUE, option="B") +
   labs(title = "Overall Quality vs. Sale Price", x="Quality", y="Price")
 
 ggplot(dataset, aes(x=SalePrice, y=GrLivArea)) +
