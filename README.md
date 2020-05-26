@@ -67,26 +67,112 @@ dataset$OverallQual <- factor(dataset$OverallQual)
 Now when we run *str()* on our dataset we will see both **YearBuilt** and **OverallQual** as factor variables.
 
 We can now start plotting our variables. 
- 
+
+## Relationships are (NOT) so complicated
+Taking *YearBuilt* as our first candidate we start plotting. 
+```
+ggplot(dataset, aes(y=SalePrice, x=YearBuilt, group=YearBuilt, fill=YearBuilt)) +
+  theme_bw()+
+  geom_boxplot(outlier.colour="red", outlier.shape=8, outlier.size=1)+
+  theme(legend.position="none")+
+  scale_fill_viridis(discrete = TRUE) +
+  theme(axis.text.x = element_text(angle = 90))+
+  labs(title = "Year Built vs. Sale Price", x="Year", y="Price")
+```
+[YEAR BOXPLOT]
+It is pretty evident that old houses sell for less as compared to a recently built house. And as for *OverallQual*,
+
+```
+ggplot(dataset, aes(y=SalePrice, x=OverallQual, group=OverallQual,fill=OverallQual)) +
+  geom_boxplot(alpha=0.3)+
+  theme(legend.position="none")+
+  scale_fill_viridis(discrete = TRUE, option="B") +
+  labs(title = "Overall Quality vs. Sale Price", x="Quality", y="Price")
+```
+[OverallQual BOXPLOT]
+This was expected since you'd naturally pay more for house which is of better quality. You won't want your foot to break through the floor board, will you? Now that the qualitative variables are out of the way we can focus on the numeric variables. The very first candidate we have here is *GrLivArea*.
+```
+ggplot(dataset, aes(x=SalePrice, y=GrLivArea)) +
+  theme_bw()+
+  geom_point(colour="Blue", alpha=0.3)+
+  theme(legend.position='none')+
+  labs(title = "General Living Area vs. Sale Price", x="Price", y="Area")
+```
+[GrLivArea Scatter]
+
+I would be lying if I said I didn't expect this. The very first instinct of a customer is to check the area of rooms. And I think the result will be same for *TotalBsmtASF*. Let's see..
+```
+ggplot(dataset, aes(x=SalePrice, y=TotalBsmtSF)) +
+  theme_bw()+
+  geom_point(colour="Blue", alpha=0.3)+
+  theme(legend.position='none')+
+  labs(title = "Total Basement Area vs. Sale Price", x="Price", y="Area")
+```
+[TotalBsmtSF]
+
+### So what can we say about our cherry picked variables?
+*GrLivArea* and *TotalBsmtSF* both were found to be in a linear relation with *SalePrice*.
+As for the categorical variables, we can say with confidence that the two variable which we picked were related to *SalePrice* with confidence. 
+
+But these are not the only variables and there's more to than what meets the eye. So to tread over these many variables we'll take help from a correlation matrix to see how each variable correlate to get a better insight.
+
+# Time for Correlation Plots
+**So what is Correlation?**
+>Correlation is a measure of how well two variables are related to each other. There are positive as well as negative correlation.
 
 
+If you want to read more on Correlation then take a look at this [article](https://medium.com/@SilentFlame/pearson-correlation-a-mathematical-understanding-c9aa686113cb).
+So let's create a basic Correlation Matrix.
+```
+M <- cor(dataset)
+M <- dataset %>% mutate_if(is.character, as.factor)
+M <- M %>% mutate_if(is.factor, as.numeric)
+M <- cor(M)
 
-You can also:
-  - Import and save files from GitHub, Dropbox, Google Drive and One Drive
-  - Drag and drop markdown and HTML files into Dillinger
-  - Export documents as Markdown, HTML and PDF
+mat1 <- data.matrix(M)
+print(M)
 
-Markdown is a lightweight markup language based on the formatting conventions that people naturally use in email.  As [John Gruber] writes on the [Markdown site][df1]
+#plotting the correlation matrix
+corrplot(M, method = "color", tl.col = 'black', is.corr=FALSE)       
+```
+[correlation matrix old]
 
-> The overriding design goal for Markdown's
-> formatting syntax is to make it as readable
-> as possible. The idea is that a
-> Markdown-formatted document should be
-> publishable as-is, as plain text, without
-> looking like it's been marked up with tags
-> or formatting instructions.
+#### This looks like a mess
+But worry not because now we're going to get our hands dirty and make this plot interpretable and tidy.
 
-This text you see here is *actually* written in Markdown! To get a feel for Markdown's syntax, type some text into the left window and watch the results in the right.
+```
+M[lower.tri(M,diag=TRUE)] <- NA                   #remove coeff - 1 and duplicates
+M[M == 1] <- NA
+
+M <- as.data.frame(as.table(M))                   #turn into a 3-column table
+M <- na.omit(M)                                   #remove the NA values from above 
+
+M <- subset(M, abs(Freq) > 0.5)              #select significant values, in this case, 0.5
+M <- M[order(-abs(M$Freq)),]                                  #sort by highest correlation
+
+
+mtx_corr <- reshape2::acast(M, Var1~Var2, value.var="Freq")    #turn M back into matrix 
+corrplot(mtx_corr, is.corr=TRUE, tl.col="black", na.label=" ") #plot correlations visually
+```
+[improved corr]
+#### Now this looks much better and readable.
+Looking at our plot we can see numerous other variables which are highly correlated with *SalePrice*. We pick these variables and then create a new dataframe by only including these select variables.
+
+Now that we have our suspect variables we can use a **PairPlot** to visualize all these variables in conjunction of each other.
+```
+newData <- data.frame(dataset$SalePrice, dataset$TotalBsmtSF, 
+                      dataset$GrLivArea, dataset$OverallQual, 
+                      dataset$YearBuilt, dataset$FullBath, 
+                      dataset$GarageCars )
+
+pairs(newData[1:7], 
+      col="blue",
+      main = "Pairplot of our new set of variables"         
+)
+```
+[pairplot]
+
+
 
 ### Tech
 
