@@ -2,7 +2,7 @@
 
 The main purpose of creating this project was to gain an overall understanding of the data. 
 Hope this will help you understand the basics. There's more that can be done with this dataset when it comes to visualization and I'll be adding more stuff in near future. 
-
+![](assets/house.png)
 ##### Why this dataset?
 Well it's where I think most of the aspiring data scientist would start. This data set is a good starting place to heat up your engines to start thinking like a data scientist at the same time being a novice friendly helps you breeze through the exercise. 
 
@@ -26,7 +26,7 @@ str(dataset)
 ```
 Here, in the above snippet, we use scipen to avoid scientific notation. We import our data and use the str() function to get the gist of the selection of variables which the dataset offers and it's respective data type.
 
-[str image]
+![str_image](assets/str.png)
 
 The variable **SalePrice**  is the dependent variable which we are going to base all our assumptions and hypothesis around. So it's good to first understand more about this variable. For this, we'll use a Histogram and fetch a frequency distribution to get a visual understanding about the variable.
 You'd notice there's another function  i.e. summary() which is essentially used to for the same purpose but without any form of visualization. With experience you'll be able to understand and interpret this form of information better. 
@@ -40,7 +40,8 @@ ggplot(dataset, aes(x=SalePrice)) +
 summary(dataset$SalePrice)
 ```
 
-[SalePrice Histogram and Summary]
+![Histogram_and_Summary](assets/sale_density.png)
+![](assets/summary.png)
 
 So it is pretty evident that you'll find many properties in the sub $200,000 USD range. There are properties over $600,000 and we can try to understand why is it so and what makes these homes so ridiculously expensive. That can be another fun exercise...
 
@@ -79,7 +80,8 @@ ggplot(dataset, aes(y=SalePrice, x=YearBuilt, group=YearBuilt, fill=YearBuilt)) 
   theme(axis.text.x = element_text(angle = 90))+
   labs(title = "Year Built vs. Sale Price", x="Year", y="Price")
 ```
-[YEAR BOXPLOT]
+![YEAR_BOXPLOT](assets/yearbox.png)
+
 It is pretty evident that old houses sell for less as compared to a recently built house. And as for *OverallQual*,
 
 ```
@@ -89,7 +91,7 @@ ggplot(dataset, aes(y=SalePrice, x=OverallQual, group=OverallQual,fill=OverallQu
   scale_fill_viridis(discrete = TRUE, option="B") +
   labs(title = "Overall Quality vs. Sale Price", x="Quality", y="Price")
 ```
-[OverallQual BOXPLOT]
+![OverallQual_BOXPLOT](assets/qualbox.png)
 This was expected since you'd naturally pay more for house which is of better quality. You won't want your foot to break through the floor board, will you? Now that the qualitative variables are out of the way we can focus on the numeric variables. The very first candidate we have here is *GrLivArea*.
 ```
 ggplot(dataset, aes(x=SalePrice, y=GrLivArea)) +
@@ -98,7 +100,7 @@ ggplot(dataset, aes(x=SalePrice, y=GrLivArea)) +
   theme(legend.position='none')+
   labs(title = "General Living Area vs. Sale Price", x="Price", y="Area")
 ```
-[GrLivArea Scatter]
+![GrLivArea_Scatter](assets/grlivarea_scatter.png)
 
 I would be lying if I said I didn't expect this. The very first instinct of a customer is to check the area of rooms. And I think the result will be same for *TotalBsmtASF*. Let's see..
 ```
@@ -108,7 +110,7 @@ ggplot(dataset, aes(x=SalePrice, y=TotalBsmtSF)) +
   theme(legend.position='none')+
   labs(title = "Total Basement Area vs. Sale Price", x="Price", y="Area")
 ```
-[TotalBsmtSF]
+![TotalBsmtSF](assets/bsmt_scatter.png)
 
 ### So what can we say about our cherry picked variables?
 *GrLivArea* and *TotalBsmtSF* both were found to be in a linear relation with *SalePrice*.
@@ -135,7 +137,7 @@ print(M)
 #plotting the correlation matrix
 corrplot(M, method = "color", tl.col = 'black', is.corr=FALSE)       
 ```
-[correlation matrix old]
+![correlation_matrix_old](assets/corr_mat_old.png)
 
 #### This looks like a mess
 But worry not because now we're going to get our hands dirty and make this plot interpretable and tidy.
@@ -154,7 +156,7 @@ M <- M[order(-abs(M$Freq)),]                                  #sort by highest c
 mtx_corr <- reshape2::acast(M, Var1~Var2, value.var="Freq")    #turn M back into matrix 
 corrplot(mtx_corr, is.corr=TRUE, tl.col="black", na.label=" ") #plot correlations visually
 ```
-[improved corr]
+![correlation_matrix_new](assets/cor_mat_new.png)
 #### Now this looks much better and readable.
 Looking at our plot we can see numerous other variables which are highly correlated with *SalePrice*. We pick these variables and then create a new dataframe by only including these select variables.
 
@@ -170,7 +172,7 @@ pairs(newData[1:7],
       main = "Pairplot of our new set of variables"         
 )
 ```
-[pairplot]
+![pairplot](assets/pairplot.png)
 
 
 
