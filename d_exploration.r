@@ -1,4 +1,4 @@
-easypackages::libraries("dplyr", "ggplot2", "tidyr", "corrplot", "corrr", "magrittr", "e1071","ggplot2","RColorBrewer", "viridis")
+easypackages::libraries("dplyr","reshape2", "ggplot2", "tidyr", "corrplot", "corrr", "magrittr", "e1071","ggplot2","RColorBrewer", "viridis")
 
 options(scipen = 5)               #To force R to not use scientfic notation
 
@@ -51,14 +51,42 @@ ggplot(dataset, aes(x=SalePrice, y=TotalBsmtSF)) +
   labs(title = "Total Basement Area vs. Sale Price", x="Price", y="Area")
 
 
-numeric <- dplyr::select_if(dataset, is.numeric)       #remove non-numeric variables to make it easy to create correlation matrix
-numeric_NA <- na.omit(numeric)                          #remove rows with NA value
-M <- cor(numeric_NA)                                    #create correlation matrix
+
+
+M <- cor(dataset)
+M <- dataset %>% mutate_if(is.character, as.factor)
+M <- M %>% mutate_if(is.factor, as.numeric)
+M <- cor(M)
+
 mat1 <- data.matrix(M)
+print(M)
 
-#dplyr::filter_all( mat1,  all_vars(. > 0.2))
+corrplot(M, method = "color", tl.col = 'black', is.corr=FALSE)       #plotting the correlation matrix
 
-corrplot(M, method = "color", tl.col = 'black',is.corr = FALSE)       #plotting the correlation matrix
+
+#But this ain't it chief - This is a mess we need to fix
+
+
+
+M[lower.tri(M,diag=TRUE)] <- NA                         #remove coeff - 1 and duplicates
+M[M == 1] <- NA
+
+M <- as.data.frame(as.table(M))                   #turn into a 3-column table
+M <- na.omit(M)                                   #remove the NA values from above 
+
+
+M <- subset(M, abs(Freq) > 0.5)             #select significant values, in this case, 0.5
+M <- M[order(-abs(M$Freq)),]              #sort by highest correlation
+
+print(M)
+
+mtx_corr <- reshape2::acast(M, Var1~Var2, value.var="Freq")  #turn M back into matrix in order to plot with corrplot
+
+corrplot(mtx_corr, is.corr=TRUE, tl.col="black", na.label=" ") #plot correlations visually
+
+
+#This looks much better
+
 
 
 newData <- data.frame(dataset$SalePrice, dataset$TotalBsmtSF, 
@@ -69,11 +97,13 @@ newData <- data.frame(dataset$SalePrice, dataset$TotalBsmtSF,
 
 
 pairs(newData[1:7], 
-      main = "pairplot of all numeric variables"          # to get a gist of these varibales.
-      
+      main = "Pairplot of our new set of variables",          # to get a gist of these varibles.
+      col="blue"
 )
 
-numeric_NA <- numeric_NA[,!grepl("^Bsmt",names(numeric_NA))]      #remove BSMTx variables
+plotmatrix(newData)
+
+numeric_NA <- dataset[,!grepl("^Bsmt",names(dataset))]      #remove BSMTx variables
 
 numeric_NA <- subset(numeric_NA, select = -c(numeric_NA$PoolQC, numeric_NA$PoolArea, numeric_NA$FullBath, numeric_NA$HalfBath) )
 #numeric_NA = select(numeric_NA, -c(numeric_NA$PoolQC, numeric_A$FullBath, numeric_NA$HalfBath))
@@ -167,4 +197,5 @@ lines(p, col="red", lty=2, lwd=2)
 plot(numeric_NA$grlive_log, numeric_NA$log_price, main =" Homoscedasticity for Living Area vs. Sale Price",xlab="Living Area", ylab="price")
 
 plot(numeric_NA$totalbsmt_log, numeric_NA$log_price,  main =" Homoscedasticity for Total Basement Area vs. Sale Price",xlab="Basement Area", ylab="price") 
+
 
