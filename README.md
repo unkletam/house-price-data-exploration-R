@@ -174,6 +174,57 @@ pairs(newData[1:7],
 ```
 ![pairplot](assets/pairplot.png)
 
+#### While you're at it, clean your data
+We should remove some useless variables which we are sure of not being of any use. Don't apply changes to the original dataset though. Always create a new copy in case you remove something you shouldn't have.
+```
+clean_data <- dataset[,!grepl("^Bsmt",names(dataset))]      #remove BSMTx variables
 
-**readme will be updated along the way
+drops <- c("clean_data$PoolQC", "clean_data$PoolArea", 
+               "clean_data$FullBath", "clean_data$HalfBath")
+               
+clean_data <- clean_data[ , !(names(clean_data) %in% drops)]
+
+#The variables in 'drops'are removed.
+```
+# Univariate Analysis
+Taking a look back at our old friend, *SalePrice*, we see some houses which are extremely expensive. We haven't dwelved into why is that so. Although we do know that these extremely pricey houses don't follow the pattern which other house prices are following. 
+The reason for such high prices could be justified but for the sake of our analysis, we have to drop them. Such records are called **Outliers**. 
+>Simple way to understand Outliers is to think of them as that one guy (or more) in your group who likes to eat noodles with a spoon instead of a fork. 
+
+So first, we catch these outliers and then remove them from our dataset if need be. Let's start with the *catching* part.
+```
+#Univariate Analysis
+
+clean_data$price_norm <- scale(clean_data$SalePrice)    #normalizing the price variable
+
+summary(clean_data$price_norm)
+
+plot1 <- ggplot(clean_data, aes(x=factor(1), y=price_norm)) +
+  theme_bw()+
+  geom_boxplot(width = 0.4, fill = "blue", alpha = 0.2)+
+  geom_jitter( 
+              width = 0.1, size = 1, aes(colour ="red"))+
+  geom_hline(yintercept=6.5, linetype="dashed", color = "red")+
+  theme(legend.position='none')+
+  labs(title = "Hunt for Outliers", x=NULL, y="Normalized Price")
+
+plot2 <- ggplot(clean_data, aes(x=price_norm)) + 
+  theme_bw()+
+  geom_histogram(color = 'black', fill = 'blue', alpha = 0.2)+
+  geom_vline(xintercept=6.5, linetype="dashed", color = "red")+
+  geom_density(aes(y=0.4*..count..), colour="red", adjust=4) +
+  labs(title = "", x="Price", y="Count")
+
+grid.arrange(plot1, plot2, ncol=2)
+
+```
+![univariate](assets/univariate.png)
+The very first thing I did here was normalize **SalePrice** so that it's more interpretable and it's easier to bottom down on these outliers. The normalized SalePrice has *Mean= 0* and *SD= 1*. Running a quick *'summary()'* on this new variable **price_norm** give us this...
+![summary2](assets/summary2.png)
+So now we know for sure that there **ARE** outliers present here. But do we really need to get rid of them? From the previous scatterplots we can say that these outliers are still following along with the trend and don't need purging yet. Deciding what to do with outliers can be quite complex at times.
+You can read more on outliers [here](https://www.theanalysisfactor.com/outliers-to-drop-or-not-to-drop/).
+
+
+
+
 
