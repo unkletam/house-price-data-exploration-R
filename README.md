@@ -220,7 +220,9 @@ grid.arrange(plot1, plot2, ncol=2)
 ```
 ![univariate](assets/univariate.png)
 The very first thing I did here was normalize **SalePrice** so that it's more interpretable and it's easier to bottom down on these outliers. The normalized SalePrice has *Mean= 0* and *SD= 1*. Running a quick *'summary()'* on this new variable **price_norm** give us this...
+
 ![summary2](assets/summary2.png)
+
 So now we know for sure that there **ARE** outliers present here. But do we really need to get rid of them? From the previous scatterplots we can say that these outliers are still following along with the trend and don't need purging yet. Deciding what to do with outliers can be quite complex at times.
 You can read more on outliers [here](https://www.theanalysisfactor.com/outliers-to-drop-or-not-to-drop/).
 
