@@ -109,11 +109,17 @@ clean_data <- dataset[,!grepl("^Bsmt",names(dataset))]      #remove BSMTx variab
 drops <- c("clean_data$PoolQC", "clean_data$PoolArea", "clean_data$FullBath", "clean_data$HalfBath")
 clean_data <- clean_data[ , !(names(clean_data) %in% drops)]
 
+<<<<<<< HEAD
+=======
+#clean_data <- subset(clean_data, select = -c(clean_data$PoolQC, clean_data$PoolArea, clean_data$FullBath, clean_data$HalfBath) )
+
+>>>>>>> 0173eb8f8424108cae2deea72345e26e6d52e7fd
 str(clean_data)
 
 
 #Univariate Analysis
 
+<<<<<<< HEAD
 
 clean_data$price_norm <- scale(clean_data$SalePrice)    #normalizing the price variable
 
@@ -138,6 +144,12 @@ plot2 <- ggplot(clean_data, aes(x=price_norm)) +
 grid.arrange(plot1, plot2, ncol=2)
 
 
+=======
+clean_data$price_norm <- scale(clean_data$SalePrice)    #normalizing the price variable
+plot(clean_data$price_norm)                             #we can see the outliers clearly 
+
+clean_data$price_norm <- scale(clean_data$SalePrice)
+>>>>>>> 0173eb8f8424108cae2deea72345e26e6d52e7fd
 
 #Bi-variate Analysis
 
