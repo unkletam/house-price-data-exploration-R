@@ -5,7 +5,7 @@ options(scipen = 5)               #To force R to not use scientfic notation
 dataset <- read.csv("dataset/train.csv")
 
 str(dataset)  
-View(dataset)
+
 
 
 ggplot(dataset, aes(x=SalePrice)) + 
@@ -112,8 +112,9 @@ clean_data <- clean_data[ , !(names(clean_data) %in% drops)]
 str(clean_data)
 
 
-#Univariate Analysis
 
+
+#Univariate Analysis
 
 clean_data$price_norm <- scale(clean_data$SalePrice)    #normalizing the price variable
 
@@ -133,93 +134,160 @@ plot2 <- ggplot(clean_data, aes(x=price_norm)) +
   geom_histogram(color = 'black', fill = 'blue', alpha = 0.2)+
   geom_vline(xintercept=6.5, linetype="dashed", color = "red")+
   geom_density(aes(y=0.4*..count..), colour="red", adjust=4) +
-  labs(title = "", x="Price", y="Count")
+  labs(title = "", x="Normalized Price", y="Count")
 
 grid.arrange(plot1, plot2, ncol=2)
 
 
 
+
 #Bi-variate Analysis
 
-plot(numeric$GrLivArea, numeric$SalePrice, xlim=c(1,5000), main =" General Living Area vs. Sale Price",xlab="Living Area", ylab="Sale Price")
+ggplot(clean_data, aes(y=SalePrice, x=GrLivArea)) +
+  theme_bw()+
+  geom_point(aes(color = SalePrice), alpha=1)+
+  scale_color_gradientn(colors = c("#00AFBB", "#E7B800", "#FC4E07")) +
+  labs(title = "General Living Area vs. Sale Price", y="Price", x="Area")
 
 
 #clean_data$GrLivArea <- sort(clean_data$GrLivArea, decreasing = TRUE)   
+
 clean_data <- clean_data[!(clean_data$GrLivArea > 4000),]   #remove outliers
 
-smoothScatter(clean_data$GrLivArea, clean_data$SalePrice,xlim=c(1,5000),  main =" General Living Area vs. Sale Price",xlab="Living Area", ylab="Sale Price")
+ggplot(clean_data, aes(y=SalePrice, x=GrLivArea)) +
+  theme_bw()+
+  geom_point(aes(color = SalePrice), alpha=1)+
+  scale_color_gradientn(colors = c("#00AFBB", "#E7B800", "#FC4E07")) +
+  labs(title = "General Living Area vs. Sale Price [Outlier Removed]", y="Price", x="Area")
 
-smoothScatter(clean_data$SalePrice, clean_data$TotalBsmtSF, main =" Total Basement Area vs. Sale Price",xlab="Price", ylab="Basement Area") #The outliers isnt that bad and we can leave them alone.
+
+#As for Basement Area, the outliers don't look so bad. 
+
+ggplot(clean_data, aes(y=SalePrice, x=TotalBsmtSF)) +
+  theme_bw()+
+  geom_point(aes(color = SalePrice), alpha=1)+
+  scale_color_gradientn(colors = c("#00AFBB", "#E7B800", "#FC4E07")) +
+  labs(title = "Total Basement Area vs. Sale Price", y="Price", x="Basement Area")
+
 
 
 #advanced
 
-hist(clean_data$SalePrice, probability = TRUE, main = "Sales Price Density", xlab = "Price")
-lines(density(clean_data$SalePrice))
-lines(density(clean_data$SalePrice, adjust=5),col="red")
 
-p <- probplot(clean_data$SalePrice, line=FALSE)
-lines(p, col="red", lty=2, lwd=2)
-
-clean_data$log_price <- log(clean_data$SalePrice)         #we use log transformation to convert values
-
-hist(clean_data$log_price, probability = TRUE, main = "Sales Price Density", xlab = "Price", xlim = c(10.0,14.0))
-lines(density(clean_data$log_price))
-lines(density(clean_data$log_price, adjust=5),col="red")
-
-p <- probplot(clean_data$log_price, line=FALSE)           
-lines(p, col="red", lty=2, lwd=2)
+ggplot(clean_data, aes(x=SalePrice)) + 
+  theme_bw()+
+  geom_density(fill="#69b3a2", color="#e9ecef", alpha=0.8)+
+  geom_density(color="black", alpha=1, adjust = 5, lwd=1.2)+
+  labs(title = "Sale Price Density", x="Price", y="Density")
 
 
+ggplot(clean_data, aes(sample=SalePrice))+
+  theme_bw()+
+  stat_qq(color="#69b3a2")+
+  stat_qq_line(color="black",lwd=1, lty=2)+
+  labs(title = "Probability Plot for SalePrice")
+  
+
+#log transformation
+clean_data$log_price <- log(clean_data$SalePrice)         
 
 
-hist(clean_data$GrLivArea, probability = TRUE, main = "General Living Area Density", xlab = "Area")
-lines(density(clean_data$GrLivArea))
-lines(density(clean_data$GrLivArea, adjust=5),col="red") 
+ggplot(clean_data, aes(x=log_price)) + 
+  theme_bw()+
+  geom_density(fill="#69b3a2", color="#e9ecef", alpha=0.8)+
+  geom_density(color="black", alpha=1, adjust = 5, lwd=1)+
+  labs(title = "Sale Price Density [Log]", x="Price", y="Density")
 
-p <- probplot(clean_data$GrLivArea, line=FALSE)
-lines(p, col="red", lty=2, lwd=2)
-
-clean_data$grlive_log <- log(clean_data$GrLivArea) #log transformation
-
-hist(clean_data$grlive_log, probability = TRUE, main = "General Living Area Density (log) ", xlab = "Area", xlim = c(5.5,8.5))
-lines(density(clean_data$grlive_log))
-lines(density(clean_data$grlive_log, adjust=5),col="red") 
-
-p <- probplot(clean_data$grlive_log, line=FALSE)
-lines(p, col="red", lty=2, lwd=2)
+ggplot(clean_data, aes(sample=log_price))+
+  theme_bw()+
+  stat_qq(color="#69b3a2")+
+  stat_qq_line(color="black",lwd=1, lty=2)+
+  labs(title = "Probability Plot for SalePrice [Log]")
 
 
 
+#Same for GrLivArea
+
+ggplot(clean_data, aes(x=GrLivArea)) + 
+  theme_bw()+
+  geom_density(fill="#9e69b3", color="#e9ecef", alpha=0.5)+
+  geom_density(color="black", alpha=1, adjust = 5, lwd=1)+
+  labs(title = "General Living Area Density", x="Area", y="Density")
+
+ggplot(clean_data, aes(sample=GrLivArea))+
+  theme_bw()+
+  stat_qq(color="#9e69b3")+
+  stat_qq_line(color="black",lwd=1, lty=2)+
+  labs(title = "Probability Plot for GrLivArea")
 
 
-hist(clean_data$TotalBsmtSF, probability = TRUE, main = "Total Basement Area Density", xlab = "Area")
-lines(density(clean_data$TotalBsmtSF))
-lines(density(clean_data$TotalBsmtSF, adjust=5),col="red") 
+#log transformation
+clean_data$grlive_log <- log(clean_data$GrLivArea) 
 
-p <- probplot(clean_data$TotalBsmtSF, line=FALSE)
-lines(p, col="red", lty=2, lwd=2)
+
+
+ggplot(clean_data, aes(x=grlive_log)) + 
+  theme_bw()+
+  geom_density(fill="#9e69b3", color="#e9ecef", alpha=0.5)+
+  geom_density(color="black", alpha=1, adjust = 5, lwd=1)+
+  labs(title = "General Living Area Density [Log]", x="Area", y="Density")
+
+ggplot(clean_data, aes(sample=grlive_log))+
+  theme_bw()+
+  stat_qq(color="#9e69b3")+
+  stat_qq_line(color="black",lwd=1, lty=2)+
+  labs(title = "Probability Plot for GrLivArea [Log]")
+
+
+
+#Now for TotalBsmtSF
+
+ggplot(clean_data, aes(x=TotalBsmtSF)) + 
+  theme_bw()+
+  geom_density(fill="#ed557e", color="#e9ecef", alpha=0.5)+
+  geom_density(color="black", alpha=1, adjust = 5, lwd=1)+
+  labs(title = "Total Basement Area Density", x="Area", y="Density")
+
+ggplot(clean_data, aes(sample=TotalBsmtSF))+
+  theme_bw()+
+  stat_qq(color="#ed557e")+
+  stat_qq_line(color="black",lwd=1, lty=2)+
+  labs(title = "Probability Plot for TotalBsmtSF")
+
+
 
 clean_data <- transform(clean_data, cat_bsmt = ifelse(TotalBsmtSF>0, 1, 0))
 
-clean_data$totalbsmt_log <- log(clean_data$TotalBsmtSF) #log transformation
+#log transformation
+clean_data$totalbsmt_log <- log(clean_data$TotalBsmtSF)
 
 clean_data<-transform(clean_data,totalbsmt_log = ifelse(cat_bsmt == 1, log(TotalBsmtSF), 0 ))
 
-hist(clean_data$totalbsmt_log, probability = TRUE, main = "Total Basement Area Density (log) ", xlab = "Area", xlim = c(4.5,8.5))
-lines(density(clean_data$totalbsmt_log))
-lines(density(clean_data$totalbsmt_log, adjust=5),col="red") 
+ggplot(clean_data, aes(x=totalbsmt_log)) + 
+  theme_bw()+
+  geom_density(fill="#ed557e", color="#e9ecef", alpha=0.5)+
+  geom_density(color="black", alpha=1, adjust = 5, lwd=1)+
+  labs(title = "Total Basement Area Density [transformed]", x="Area", y="Density")
 
-p <- probplot(clean_data$totalbsmt_log, line=FALSE)
-lines(p, col="red", lty=2, lwd=2)
-
+ggplot(clean_data, aes(sample=totalbsmt_log))+
+  theme_bw()+
+  stat_qq(color="#ed557e")+
+  stat_qq_line(color="black",lwd=1, lty=2)+
+  labs(title = "Probability Plot for TotalBsmtSF [transformed]")
 
 
 
 #checking for homoscedasiticity
 
-plot(clean_data$grlive_log, clean_data$log_price, main =" Homoscedasticity for Living Area vs. Sale Price",xlab="Living Area", ylab="price")
+ggplot(clean_data, aes(x=grlive_log, y=log_price)) +
+  theme_bw()+
+  geom_point(colour="#e34262", alpha=0.3)+
+  theme(legend.position='none')+
+  labs(title = "Homoscedasticity : Living Area vs. Sale Price ", x="Area [Log]", y="Price [Log]")
 
-plot(clean_data$totalbsmt_log, clean_data$log_price,  main =" Homoscedasticity for Total Basement Area vs. Sale Price",xlab="Basement Area", ylab="price") 
-
+ggplot(clean_data, aes(x=totalbsmt_log, y=log_price)) +
+  theme_bw()+
+  geom_point(colour="#e34262", alpha=0.3)+
+  theme(legend.position='none')+
+  labs(title = " Homoscedasticity : Total Basement Area vs. Sale Price", x="Area [Log]", y="Price [Log]")
 
