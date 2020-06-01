@@ -255,3 +255,15 @@ ggplot(clean_data, aes(y=SalePrice, x=GrLivArea)) +
 ```
 ![grlive_bi_out](assets/grlive_bi_out.png)
 
+The outlier is removed and the x-scale is adjusted. Next set of variables which we will analyze are *SalePrice* and *TotalBsmtSF*.
+```
+ggplot(clean_data, aes(y=SalePrice, x=TotalBsmtSF)) +
+  theme_bw()+
+  geom_point(aes(color = SalePrice), alpha=1)+
+  scale_color_gradientn(colors = c("#00AFBB", "#E7B800", "#FC4E07")) +
+  labs(title = "Total Basement Area vs. Sale Price", y="Price", x="Basement Area")
+```
+![bsmt_bi_out](assets/totalbsmt_bi.png)
+
+The observations here adhere to our assumptions and don't really need purging. **If it ain't broke, don't fix it.** 
+I did mention that it is important to tread very carefully when working with outliers. You don't get to remove them everytime.
