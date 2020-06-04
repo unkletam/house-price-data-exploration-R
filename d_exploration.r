@@ -1,4 +1,6 @@
-easypackages::libraries("dplyr","reshape2","gridExtra", "ggplot2", "tidyr", "corrplot", "corrr", "magrittr", "e1071","ggplot2","RColorBrewer", "viridis")
+easypackages::libraries("dplyr","reshape2","gridExtra", "ggplot2", 
+                        "tidyr", "corrplot", "corrr", "magrittr", 
+                        "e1071","ggplot2","RColorBrewer", "viridis")
 
 options(scipen = 5)               #To force R to not use scientfic notation
 
@@ -174,87 +176,90 @@ ggplot(clean_data, aes(y=SalePrice, x=TotalBsmtSF)) +
 #advanced
 
 
-ggplot(clean_data, aes(x=SalePrice)) + 
+plot3 <- ggplot(clean_data, aes(x=SalePrice)) + 
   theme_bw()+
   geom_density(fill="#69b3a2", color="#e9ecef", alpha=0.8)+
   geom_density(color="black", alpha=1, adjust = 5, lwd=1.2)+
   labs(title = "Sale Price Density", x="Price", y="Density")
 
 
-ggplot(clean_data, aes(sample=SalePrice))+
+plot4 <- ggplot(clean_data, aes(sample=SalePrice))+
   theme_bw()+
   stat_qq(color="#69b3a2")+
   stat_qq_line(color="black",lwd=1, lty=2)+
   labs(title = "Probability Plot for SalePrice")
+
+grid.arrange(plot3, plot4, ncol=2)
   
 
 #log transformation
 clean_data$log_price <- log(clean_data$SalePrice)         
 
 
-ggplot(clean_data, aes(x=log_price)) + 
+plot5 <- ggplot(clean_data, aes(x=log_price)) + 
   theme_bw()+
   geom_density(fill="#69b3a2", color="#e9ecef", alpha=0.8)+
   geom_density(color="black", alpha=1, adjust = 5, lwd=1)+
   labs(title = "Sale Price Density [Log]", x="Price", y="Density")
 
-ggplot(clean_data, aes(sample=log_price))+
+plot6 <- ggplot(clean_data, aes(sample=log_price))+
   theme_bw()+
   stat_qq(color="#69b3a2")+
   stat_qq_line(color="black",lwd=1, lty=2)+
   labs(title = "Probability Plot for SalePrice [Log]")
 
+grid.arrange(plot5, plot6, ncol=2)
+
 
 
 #Same for GrLivArea
 
-ggplot(clean_data, aes(x=GrLivArea)) + 
+plot7 <- ggplot(clean_data, aes(x=GrLivArea)) + 
   theme_bw()+
   geom_density(fill="#9e69b3", color="#e9ecef", alpha=0.5)+
   geom_density(color="black", alpha=1, adjust = 5, lwd=1)+
   labs(title = "General Living Area Density", x="Area", y="Density")
 
-ggplot(clean_data, aes(sample=GrLivArea))+
+plot8 <- ggplot(clean_data, aes(sample=GrLivArea))+
   theme_bw()+
   stat_qq(color="#9e69b3")+
   stat_qq_line(color="black",lwd=1, lty=2)+
   labs(title = "Probability Plot for GrLivArea")
 
+grid.arrange(plot7, plot8, ncol=2)
 
 #log transformation
 clean_data$grlive_log <- log(clean_data$GrLivArea) 
 
-
-
-ggplot(clean_data, aes(x=grlive_log)) + 
+plot9 <- ggplot(clean_data, aes(x=grlive_log)) + 
   theme_bw()+
   geom_density(fill="#9e69b3", color="#e9ecef", alpha=0.5)+
   geom_density(color="black", alpha=1, adjust = 5, lwd=1)+
   labs(title = "General Living Area Density [Log]", x="Area", y="Density")
 
-ggplot(clean_data, aes(sample=grlive_log))+
+plot10 <- ggplot(clean_data, aes(sample=grlive_log))+
   theme_bw()+
   stat_qq(color="#9e69b3")+
   stat_qq_line(color="black",lwd=1, lty=2)+
   labs(title = "Probability Plot for GrLivArea [Log]")
 
-
+grid.arrange(plot9, plot10, ncol=2)
 
 #Now for TotalBsmtSF
 
-ggplot(clean_data, aes(x=TotalBsmtSF)) + 
+plot11 <- ggplot(clean_data, aes(x=TotalBsmtSF)) + 
   theme_bw()+
   geom_density(fill="#ed557e", color="#e9ecef", alpha=0.5)+
   geom_density(color="black", alpha=1, adjust = 5, lwd=1)+
   labs(title = "Total Basement Area Density", x="Area", y="Density")
 
-ggplot(clean_data, aes(sample=TotalBsmtSF))+
+plot12 <- ggplot(clean_data, aes(sample=TotalBsmtSF))+
   theme_bw()+
   stat_qq(color="#ed557e")+
   stat_qq_line(color="black",lwd=1, lty=2)+
   labs(title = "Probability Plot for TotalBsmtSF")
 
-
+grid.arrange(plot11, plot12, ncol=2)
 
 clean_data <- transform(clean_data, cat_bsmt = ifelse(TotalBsmtSF>0, 1, 0))
 
@@ -263,19 +268,19 @@ clean_data$totalbsmt_log <- log(clean_data$TotalBsmtSF)
 
 clean_data<-transform(clean_data,totalbsmt_log = ifelse(cat_bsmt == 1, log(TotalBsmtSF), 0 ))
 
-ggplot(clean_data, aes(x=totalbsmt_log)) + 
+plot13 <- ggplot(clean_data, aes(x=totalbsmt_log)) + 
   theme_bw()+
   geom_density(fill="#ed557e", color="#e9ecef", alpha=0.5)+
   geom_density(color="black", alpha=1, adjust = 5, lwd=1)+
   labs(title = "Total Basement Area Density [transformed]", x="Area", y="Density")
 
-ggplot(clean_data, aes(sample=totalbsmt_log))+
+plot14 <- ggplot(clean_data, aes(sample=totalbsmt_log))+
   theme_bw()+
   stat_qq(color="#ed557e")+
   stat_qq_line(color="black",lwd=1, lty=2)+
   labs(title = "Probability Plot for TotalBsmtSF [transformed]")
 
-
+grid.arrange(plot13, plot14, ncol=2)
 
 #checking for homoscedasiticity
 
