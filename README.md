@@ -226,7 +226,44 @@ The very first thing I did here was normalize **SalePrice** so that it's more in
 So now we know for sure that there **ARE** outliers present here. But do we really need to get rid of them? From the previous scatterplots we can say that these outliers are still following along with the trend and don't need purging yet. Deciding what to do with outliers can be quite complex at times.
 You can read more on outliers [here](https://www.theanalysisfactor.com/outliers-to-drop-or-not-to-drop/).
 
+# Bi-Variate Analysis
+Bivariate analysis is the simultaneous analysis of two variables (attributes). It explores the concept of relationship between two variables, whether there exists an association and the strength of this association, or whether there are differences between two variables and the significance of these differences. There are three types of bivariate analysis.		
+- Numerical & Numerical
+- Categorical & Categorical
+- Numerical & Categorical
 
+The very first set of variables we will analyze here are *SalePrice* and *GrLivArea*. Both variables are Numerical so using a Scatter Plot is a good idea !
+```
+ggplot(clean_data, aes(y=SalePrice, x=GrLivArea)) +
+  theme_bw()+
+  geom_point(aes(color = SalePrice), alpha=1)+
+  scale_color_gradientn(colors = c("#00AFBB", "#E7B800", "#FC4E07")) +
+  labs(title = "General Living Area vs. Sale Price", y="Price", x="Area")
+```
+![grlive_bi](assets/grlive_bi.png)
 
+Immediately, we notice that 2 houses don't follow the linear trend and affects both our results and assumptions. These are our outliers. Since our results in future are prone to be affected negatively by these outliers, we will remove them.
 
+```
+clean_data <- clean_data[!(clean_data$GrLivArea > 4000),]   #remove outliers
 
+ggplot(clean_data, aes(y=SalePrice, x=GrLivArea)) +
+  theme_bw()+
+  geom_point(aes(color = SalePrice), alpha=1)+
+  scale_color_gradientn(colors = c("#00AFBB", "#E7B800", "#FC4E07")) +
+  labs(title = "General Living Area vs. Sale Price [Outlier Removed]", y="Price", x="Area")
+```
+![grlive_bi_out](assets/grlive_bi_out.png)
+
+The outlier is removed and the x-scale is adjusted. Next set of variables which we will analyze are *SalePrice* and *TotalBsmtSF*.
+```
+ggplot(clean_data, aes(y=SalePrice, x=TotalBsmtSF)) +
+  theme_bw()+
+  geom_point(aes(color = SalePrice), alpha=1)+
+  scale_color_gradientn(colors = c("#00AFBB", "#E7B800", "#FC4E07")) +
+  labs(title = "Total Basement Area vs. Sale Price", y="Price", x="Basement Area")
+```
+![bsmt_bi_out](assets/totalbsmt_bi.png)
+
+The observations here adhere to our assumptions and don't really need purging. **If it ain't broke, don't fix it.** 
+I did mention that it is important to tread very carefully when working with outliers. You don't get to remove them everytime.
