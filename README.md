@@ -366,4 +366,24 @@ grid.arrange(plot13, plot14, ncol=2)
 We can still see the ignored datapoints on the chart but hey, I can trust you with this, right? 
 ---
 ## Homoscedasticity -- *wait is my spelling correct?*
+The best approach to test homoscedasticity for two metric variables is graphically. Departures from an equal dispersion are shown by such shapes as cones (small dispersion at one side of the graph, large dispersion at the opposite side) or diamonds (a large number of points at the center of the distribution).
+Starting by 'SalePrice' and 'GrLivArea'...
+```
+ggplot(clean_data, aes(x=grlive_log, y=log_price)) +
+  theme_bw()+
+  geom_point(colour="#e34262", alpha=0.3)+
+  theme(legend.position='none')+
+  labs(title = "Homoscedasticity : Living Area vs. Sale Price ", x="Area [Log]", y="Price [Log]")
+```
 
+Older versions of this scatter plot (previous to log transformations), had a conic shape (go back and check 'Scatter plots between 'SalePrice' and correlated variables (move like Jagger style)'). As you can see, the current scatter plot doesn't have a conic shape anymore. That's the power of normality! Just by ensuring normality in some variables, we solved the homoscedasticity problem.
+
+Now let's check 'SalePrice' with 'TotalBsmtSF'.
+```
+ggplot(clean_data, aes(x=totalbsmt_log, y=log_price)) +
+  theme_bw()+
+  geom_point(colour="#e34262", alpha=0.3)+
+  theme(legend.position='none')+
+  labs(title = " Homoscedasticity : Total Basement Area vs. Sale Price", x="Area [Log]", y="Price [Log]")
+```
+## That's it, we've reached the end of our Analysis. Now all that's left is to get the dummy variables and... you know the rest. :) 
