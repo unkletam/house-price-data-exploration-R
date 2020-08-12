@@ -267,3 +267,59 @@ ggplot(clean_data, aes(y=SalePrice, x=TotalBsmtSF)) +
 
 The observations here adhere to our assumptions and don't really need purging. **If it ain't broke, don't fix it.** 
 I did mention that it is important to tread very carefully when working with outliers. You don't get to remove them everytime.
+
+# Time to dig a bit deeper
+We based a ton of visualization around 'SalePrice' and other important variables, but what If I said that's not enough?
+**It's not**
+Because there's more to dig out of this pit. There are 4 horsemen of Data Analysis which I believe people should remember.
+ - Normality : When we talk about normality what we mean is that the data should look like a normal distribution. This is important because several statistic tests rely on this (e.g. t-statistics). In this exercise we'll just check univariate normality for 'SalePrice' (which is a limited approach). Remember that univariate normality doesn't ensure multivariate normality (which is what we would like to have), but it helps. Another detail to take into account is that in big samples (>200 observations) normality is not such an issue. However, if we solve normality, we avoid a lot of other problems (e.g. heteroscedacity) so that's the main reason why we are doing this analysis.
+ 
+ - Homoscedasticity : Homoscedasticity refers to the 'assumption that dependent variable(s) exhibit equal levels of variance across the range of predictor variable(s)'. Homoscedasticity is desirable because we want the error term to be the same across all values of the independent variables.
+ 
+ - Linearity : The most common way to assess linearity is to examine scatter plots and search for linear patterns. If patterns are not linear, it would be worthwhile to explore data transformations. However, we'll not get into this because most of the scatter plots we've seen appear to have linear relationships. 
+ 
+ - Absence of correlated errors : Correlated errors, like the definition suggests, happen when one error is correlated to another. For instance, if one positive error makes a negative error systematically, it means that there's a relationship between these variables. This occurs often in time series, where some patterns are time related. We'll also not get into this. However, if you detect something, try to add a variable that can explain the effect you're getting. That's the most common solution for correlated errors.
+ 
+### I think we should start doing rather than saying
+Starting with *SalePrice*. Do keep an eye on the overall distribution of our variable. 
+```
+plot3 <- ggplot(clean_data, aes(x=SalePrice)) + 
+  theme_bw()+
+  geom_density(fill="#69b3a2", color="#e9ecef", alpha=0.8)+
+  geom_density(color="black", alpha=1, adjust = 5, lwd=1.2)+
+  labs(title = "Sale Price Density", x="Price", y="Density")
+
+
+plot4 <- ggplot(clean_data, aes(sample=SalePrice))+
+  theme_bw()+
+  stat_qq(color="#69b3a2")+
+  stat_qq_line(color="black",lwd=1, lty=2)+
+  labs(title = "Probability Plot for SalePrice")
+
+grid.arrange(plot3, plot4, ncol=2)
+```
+![plot3](assets/plot3.png)
+
+*SalePrice* is definitely not normal! But we have another trick up our sleeves viz. **log transformation**. Now, one great thing about log transformation is that it can deal with skewed data and make it normal. So now it's time to apply the log transformation over our variable.
+
+```
+clean_data$log_price <- log(clean_data$SalePrice)         
+
+
+plot5 <- ggplot(clean_data, aes(x=log_price)) + 
+  theme_bw()+
+  geom_density(fill="#69b3a2", color="#e9ecef", alpha=0.8)+
+  geom_density(color="black", alpha=1, adjust = 5, lwd=1)+
+  labs(title = "Sale Price Density [Log]", x="Price", y="Density")
+
+plot6 <- ggplot(clean_data, aes(sample=log_price))+
+  theme_bw()+
+  stat_qq(color="#69b3a2")+
+  stat_qq_line(color="black",lwd=1, lty=2)+
+  labs(title = "Probability Plot for SalePrice [Log]")
+
+grid.arrange(plot5, plot6, ncol=2)
+```
+![plot3](assets/plot5.png)
+
+
