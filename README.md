@@ -375,6 +375,7 @@ ggplot(clean_data, aes(x=grlive_log, y=log_price)) +
   theme(legend.position='none')+
   labs(title = "Homoscedasticity : Living Area vs. Sale Price ", x="Area [Log]", y="Price [Log]")
 ```
+![plot3](assets/ho_liv.png)
 
 Older versions of this scatter plot (previous to log transformations), had a conic shape (go back and check 'Scatter plots between 'SalePrice' and correlated variables (move like Jagger style)'). As you can see, the current scatter plot doesn't have a conic shape anymore. That's the power of normality! Just by ensuring normality in some variables, we solved the homoscedasticity problem.
 
@@ -386,5 +387,6 @@ ggplot(clean_data, aes(x=totalbsmt_log, y=log_price)) +
   theme(legend.position='none')+
   labs(title = " Homoscedasticity : Total Basement Area vs. Sale Price", x="Area [Log]", y="Price [Log]")
 ```
+![plot3](assets/ho_bs.png)
 ## That's it, we've reached the end of our Analysis. Now all that's left is to get the dummy variables and... you know the rest. :) 
 This work was possible thanks to [Pedro Marcelino](https://www.kaggle.com/pmarcelino). I found his Analysis on this dataset in Python and wanted to re-write it in R. Give him some love!
