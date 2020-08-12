@@ -267,7 +267,7 @@ ggplot(clean_data, aes(y=SalePrice, x=TotalBsmtSF)) +
 
 The observations here adhere to our assumptions and don't really need purging. **If it ain't broke, don't fix it.** 
 I did mention that it is important to tread very carefully when working with outliers. You don't get to remove them everytime.
-
+---
 # Time to dig a bit deeper
 We based a ton of visualization around 'SalePrice' and other important variables, but what If I said that's not enough?
 **It's not**
@@ -322,10 +322,49 @@ grid.arrange(plot5, plot6, ncol=2)
 ```
 ![plot3](assets/plot5.png)
 
-### Now repeat the process with rest of our variables.
+## Now repeat the process with rest of our variables.
+#### We go with *GrLivArea* first..
+
+
 ![plot3](assets/plot7.png)
 
-**After Log Transformation..**
+#### After Log Transformation..
 
 ![plot3](assets/plot9.png)
+
+### Now for *TotalBsmtSF*
+![plot3](assets/plot11.png)
+
+## Hold On! We've got something interesting here.
+
+Looks like *TotalBsmtSF* has some zeroes. This doesn't bode well with log transformation. We'll have to do something about it. To apply a log transformation here, we'll create a variable that can get the effect of having or not having basement (binary variable). Then, we'll do a log transformation to all the non-zero observations, ignoring those with value zero. This way we can transform data, without losing the effect of having or not basement.
+
+```
+#The step where I create a new variable to dictate which row to transform and which to ignore
+clean_data <- transform(clean_data, cat_bsmt = ifelse(TotalBsmtSF>0, 1, 0))
+
+#Now we can do log transformation
+clean_data$totalbsmt_log <- log(clean_data$TotalBsmtSF)
+
+clean_data<-transform(clean_data,totalbsmt_log = ifelse(cat_bsmt == 1, log(TotalBsmtSF), 0 ))
+
+plot13 <- ggplot(clean_data, aes(x=totalbsmt_log)) + 
+  theme_bw()+
+  geom_density(fill="#ed557e", color="#e9ecef", alpha=0.5)+
+  geom_density(color="black", alpha=1, adjust = 5, lwd=1)+
+  labs(title = "Total Basement Area Density [transformed]", x="Area", y="Density")
+
+plot14 <- ggplot(clean_data, aes(sample=totalbsmt_log))+
+  theme_bw()+
+  stat_qq(color="#ed557e")+
+  stat_qq_line(color="black",lwd=1, lty=2)+
+  labs(title = "Probability Plot for TotalBsmtSF [transformed]")
+
+grid.arrange(plot13, plot14, ncol=2)
+```
+![plot3](assets/plot13.png)
+
+We can still see the ignored datapoints on the chart but hey, I can trust you with this, right? 
+
+## Homoscedasticity -- *wait is my spelling correct?*
 
