@@ -264,7 +264,6 @@ ggplot(clean_data, aes(y=SalePrice, x=TotalBsmtSF)) +
   labs(title = "Total Basement Area vs. Sale Price", y="Price", x="Basement Area")
 ```
 ![bsmt_bi_out](assets/totalbsmt_bi.png)
-
 The observations here adhere to our assumptions and don't really need purging. **If it ain't broke, don't fix it.** 
 I did mention that it is important to tread very carefully when working with outliers. You don't get to remove them everytime.
 ---
