@@ -387,4 +387,4 @@ ggplot(clean_data, aes(x=totalbsmt_log, y=log_price)) +
   labs(title = " Homoscedasticity : Total Basement Area vs. Sale Price", x="Area [Log]", y="Price [Log]")
 ```
 ## That's it, we've reached the end of our Analysis. Now all that's left is to get the dummy variables and... you know the rest. :) 
-This work was possible because of ![Pedro Marcelino](https://www.kaggle.com/pmarcelino). I found his Analysis on this dataset in Python and wanted to re-write it in R. Give him some love !
+This work was possible because of [Pedro Marcelino](https://www.kaggle.com/pmarcelino). I found his Analysis on this dataset in Python and wanted to re-write it in R. Give him some love !
