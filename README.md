@@ -322,4 +322,10 @@ grid.arrange(plot5, plot6, ncol=2)
 ```
 ![plot3](assets/plot5.png)
 
+### Now repeat the process with rest of our variables.
+![plot3](assets/plot7.png)
+
+**After Log Transformation..**
+
+![plot3](assets/plot9.png)
 
