@@ -320,7 +320,7 @@ plot6 <- ggplot(clean_data, aes(sample=log_price))+
 grid.arrange(plot5, plot6, ncol=2)
 ```
 ![plot3](assets/plot5.png)
-
+---
 ## Now repeat the process with rest of our variables.
 #### We go with *GrLivArea* first..
 
@@ -330,7 +330,7 @@ grid.arrange(plot5, plot6, ncol=2)
 #### After Log Transformation..
 
 ![plot3](assets/plot9.png)
-
+---
 ### Now for *TotalBsmtSF*
 ![plot3](assets/plot11.png)
 
@@ -364,6 +364,6 @@ grid.arrange(plot13, plot14, ncol=2)
 ![plot3](assets/plot13.png)
 
 We can still see the ignored datapoints on the chart but hey, I can trust you with this, right? 
-
+---
 ## Homoscedasticity -- *wait is my spelling correct?*
 
