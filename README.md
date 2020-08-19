@@ -264,9 +264,12 @@ ggplot(clean_data, aes(y=SalePrice, x=TotalBsmtSF)) +
   labs(title = "Total Basement Area vs. Sale Price", y="Price", x="Basement Area")
 ```
 ![bsmt_bi_out](assets/totalbsmt_bi.png)
+
 The observations here adhere to our assumptions and don't really need purging. **If it ain't broke, don't fix it.** 
 I did mention that it is important to tread very carefully when working with outliers. You don't get to remove them everytime.
+
 ---
+
 # Time to dig a bit deeper
 We based a ton of visualization around 'SalePrice' and other important variables, but what If I said that's not enough?
 **It's not**
@@ -366,8 +369,9 @@ grid.arrange(plot13, plot14, ncol=2)
 We can still see the ignored datapoints on the chart but hey, I can trust you with this, right? 
 ---
 ## Homoscedasticity -- *wait is my spelling correct?*
-The best approach to test homoscedasticity for two metric variables is graphically. Departures from an equal dispersion are shown by such shapes as cones (small dispersion at one side of the graph, large dispersion at the opposite side) or diamonds (a large number of points at the center of the distribution).
-Starting by 'SalePrice' and 'GrLivArea'...
+The best way to look for homoscedasticity is to work try and visualize the variables using charts. A scatter plot should do the job. Notice the shape which the data forms when plotted. It could look like an equal dispersion which looks like a cone or it could very well look like a diamond where a large number of data points are spread around the centre.
+
+Starting with ‘SalePrice’ and ‘GrLivArea’…
 ```
 ggplot(clean_data, aes(x=grlive_log, y=log_price)) +
   theme_bw()+
@@ -377,9 +381,10 @@ ggplot(clean_data, aes(x=grlive_log, y=log_price)) +
 ```
 ![plot3](assets/ho_liv.png)
 
-Older versions of this scatter plot (previous to log transformations), had a conic shape (go back and check 'Scatter plots between 'SalePrice' and correlated variables (move like Jagger style)'). As you can see, the current scatter plot doesn't have a conic shape anymore. That's the power of normality! Just by ensuring normality in some variables, we solved the homoscedasticity problem.
+We plotted ‘SalePrice’ and ‘GrLivArea’ before but then why is the plot different? That’s right, because of the log transformation.
+If we go back to the previously plotted graphs showing the same variable, it is evident that the data has a conical shape when plotted. But after log transformation, the conic shape is no more. Here we solved the homoscedasticity problem with just one transformation. Pretty powerful eh?
 
-Now let's check 'SalePrice' with 'TotalBsmtSF'.
+Now let’s check ‘SalePrice’ with ‘TotalBsmtSF’.
 ```
 ggplot(clean_data, aes(x=totalbsmt_log, y=log_price)) +
   theme_bw()+
